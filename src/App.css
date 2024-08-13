@@ -40,3 +40,12 @@
 .read-the-docs {
   color: #888;
 }
+
+@font-face {
+  font-family:"SDV_font";
+  src:url('./fonts/Stardew_Valley.ttf') format('truetype');
+}
+
+.sdv_font {
+  font-family: "SDV_font";
+}
