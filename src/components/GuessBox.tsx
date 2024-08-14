@@ -29,21 +29,24 @@ function GuessBox() {
     const submitHandler = () => {
         // handler that looks for a submission ==> call API to search DB for desired item
         // call REST GET API to compare values of guess item and actual item
+        
+        // create header for GET request
         const headers = new Headers();
         headers.set('Content-Type', 'application/json');
         headers.set('Accept', 'application/json');
 
+        // create url and add parameters for API search 
         let getURL = new URL("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage");
-        // add parameters to the url 
-        getURL.searchParams.append('id', guess);
+        getURL.searchParams.append('ID', guess);
 
+        // send a Request to the API
         const requestOptions: RequestInfo = new Request(getURL, {
             method: "GET",
             headers: headers,
             redirect: 'follow'
         })
 
-        /*  POST request includes the body
+        /*  For POST requests, include the body
         const requestOptions: RequestInfo = new Request("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage", {
             method: "GET",
             headers: headers,
