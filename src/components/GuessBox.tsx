@@ -5,12 +5,13 @@
 // 
 import {useState} from 'react';
 
+/*
 interface GuessEntity {
     id: string;
     profession: string;
     season: string;
     sellPrice: number;
-}
+}*/
 
 
 function GuessBox() {
@@ -47,7 +48,7 @@ function GuessBox() {
         // console.log("submission: {%s}", guess);
 
         // call REST POST API to store guess info
-        console.log("submitHanler finished");
+        console.log("submitHandler finished");
 
     }
 
