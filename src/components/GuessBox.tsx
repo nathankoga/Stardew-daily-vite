@@ -5,6 +5,13 @@
 // 
 import {useState} from 'react';
 
+interface GuessEntity {
+    id: string;
+    profession: string;
+    season: string;
+    sellPrice: number;
+}
+
 
 function GuessBox() {
 
@@ -13,12 +20,35 @@ function GuessBox() {
 
     function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
         // when the textbox value is changed, update the guess variable to whatever is inside the textbox
+        // call REST GET method to fetch from database
         setGuess(event.target.value);
     }
 
     const submitHandler = () => {
         // handler that looks for a submission ==> call API to search DB for desired item
-        console.log("clicked, submitting %s", guess);
+        // call REST GET API to compare values of guess item and actual item
+        const headers = new Headers();
+        headers.set('Content-Type', 'application/json');
+        headers.set('Accept', 'application/json');
+
+        const requestOptions: RequestInfo = new Request("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage", {
+            method: "GET",
+            headers: headers,
+            body: JSON.stringify({"ID":guess}),
+            redirect: 'follow'
+        })
+
+        fetch(requestOptions)
+            .then(response => {
+                console.log("got response: ", response)
+            })
+            .catch(error => console.log("error", error));
+        
+        // console.log("submission: {%s}", guess);
+
+        // call REST POST API to store guess info
+        console.log("submitHanler finished");
+
     }
 
     return (
