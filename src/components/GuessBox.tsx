@@ -23,6 +23,7 @@ function GuessBox() {
         // when the textbox value is changed, update the guess variable to whatever is inside the textbox
         // call REST GET method to fetch from database
         setGuess(event.target.value);
+        console.log("Current: ", guess)
     }
 
     const submitHandler = () => {
@@ -32,12 +33,24 @@ function GuessBox() {
         headers.set('Content-Type', 'application/json');
         headers.set('Accept', 'application/json');
 
+        let getURL = new URL("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage");
+        // add parameters to the url 
+        getURL.searchParams.append('id', guess);
+
+        const requestOptions: RequestInfo = new Request(getURL, {
+            method: "GET",
+            headers: headers,
+            redirect: 'follow'
+        })
+
+        /*  POST request includes the body
         const requestOptions: RequestInfo = new Request("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage", {
             method: "GET",
             headers: headers,
             body: JSON.stringify({"ID":guess}),
             redirect: 'follow'
         })
+        */
 
         fetch(requestOptions)
             .then(response => {
