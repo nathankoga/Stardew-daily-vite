@@ -74,17 +74,18 @@ function GuessBox() {
             .then(result => {
                 let parsed_res = JSON.parse(result);
                 console.log("Parsed res: ", parsed_res.toString());
-                if (parsed_res == "") {
-                    alert("No Match Found");
-                }
-                else {
-                    let parsed_body = JSON.parse(parsed_res.body);
-                    let inner = parsed_body.Item;
+                
+                let parsed_body = JSON.parse(parsed_res.body);
+                let inner = parsed_body.Item;
+                if (inner){
                     console.log("parsed_body.Item:  ", inner.toString());
                     let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
-                    
+                
                     alert(guessedItem.toString());
                     console.log(guessedItem.toString());
+                }
+                else{
+                    alert("Item not found");
                 }
                 // let returnEntity: GuessEntity = JSON.parse(parsed_res);
                 // console.log(returnEntity.toString());
