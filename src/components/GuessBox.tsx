@@ -5,13 +5,24 @@
 // 
 import {useState} from 'react';
 
-/*
-interface GuessEntity {
+
+class GuessEntity {
     ID: string;
     profession: string;
     season: string;
     sellPrice: number;
-}*/
+
+    constructor(id: string, prof: string, seas: string, sell: number) {
+        this.ID = id;
+        this.profession = prof;
+        this.season = seas;
+        this.sellPrice = sell;
+    }
+
+    toString() {
+        return `${this.ID}: profession = ${this.profession}, season = ${this.season}, sell price = ${this.sellPrice}`;
+    }
+}
 
 
 function GuessBox() {
@@ -62,9 +73,18 @@ function GuessBox() {
 
             .then(result => {
                 let parsed_res = JSON.parse(result);
-                let parsed_body = JSON.parse(parsed_res.body);
-                alert(parsed_body);
-                console.log(parsed_body.Item);
+                if (parsed_res == "") {
+                    alert("No Match Found");
+                }
+                else {
+                    let parsed_body = JSON.parse(parsed_res.body);
+                    // alert(parsed_body);
+                    // console.log(parsed_body.Item);
+                    let inner = parsed_body.Item;
+                    let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
+                    alert(guessedItem.toString());
+                    console.log(guessedItem.toString());
+                }
                 // let returnEntity: GuessEntity = JSON.parse(parsed_res);
                 // console.log(returnEntity.toString());
             })
