@@ -59,8 +59,11 @@ function GuessBox() {
 
         fetch(requestOptions)
             .then(response => {
-                console.log("got response: ", response)
-                console.log("body:", response['body'])
+                let getResponse = response.json();
+                console.log("response.json ==>", getResponse);
+                // console.log("fetching body: ", getResponse['body']);
+                // console.log("got response: ", response)
+                // console.log("body:", response.json())
             })
             .catch(error => console.log("error", error));
         
