@@ -7,7 +7,7 @@ import {useState} from 'react';
 
 /*
 interface GuessEntity {
-    id: string;
+    ID: string;
     profession: string;
     season: string;
     sellPrice: number;
@@ -58,14 +58,28 @@ function GuessBox() {
         */
 
         fetch(requestOptions)
-            .then(response => {
-                let getResponse = response.json();
-                console.log("response.json ==>", getResponse);
-                // console.log("fetching body: ", getResponse['body']);
-                // console.log("got response: ", response)
-                // console.log("body:", response.json())
+            .then(response => response.text())
+            .then(result => {
+                alert(JSON.parse(result).body);
+                
             })
-            .catch(error => console.log("error", error));
+            .catch(error => console.log('error', error));
+
+
+            // .then(response => {
+
+            //     let getResponse : ReadableStream = response.json();
+            //     console.log("response.json ==>", getResponse);
+            //     // figure out promise --> probably refactor code with this website (https://medium.com/@diegogauna.developer/restful-api-using-typescript-and-react-hooks-3d99bdd0cd39)
+            //     // or this website (https://kentcdodds.com/blog/using-fetch-with-type-script)
+            //     let item = getResponse['Item'];
+            //     // console.log("fetching body: ", getResponse['body']);
+            //     // console.log("got response: ", response)
+            //     // console.log("body:", response.json())
+            //     alert()
+                
+            // })
+            // .catch(error => console.log("error", error));
         
         // console.log("submission: {%s}", guess);
 
