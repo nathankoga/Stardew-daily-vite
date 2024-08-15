@@ -5,13 +5,13 @@
 // 
 import {useState} from 'react';
 
-
+/*
 interface GuessEntity {
     ID: string;
     profession: string;
     season: string;
     sellPrice: number;
-}
+}*/
 
 
 function GuessBox() {
@@ -59,11 +59,12 @@ function GuessBox() {
 
         fetch(requestOptions)
             .then(response => response.text())
-            
+
             .then(result => {
                 let parsed_res = JSON.parse(result).body.Item;
-                let returnEntity: GuessEntity = JSON.parse(parsed_res);
-                console.log(returnEntity.toString());
+                alert(parsed_res);
+                // let returnEntity: GuessEntity = JSON.parse(parsed_res);
+                // console.log(returnEntity.toString());
             })
 
             .catch(error => console.log('error', error));
