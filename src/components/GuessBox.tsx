@@ -20,7 +20,7 @@ class GuessEntity {
     }
 
     toString() {
-        return `${this.ID}: profession = ${this.profession}, season = ${this.season}, sell price = ${this.sellPrice}`;
+        return `${this.ID}: ${this.profession}, ${this.season}, ${this.sellPrice} G`;
     }
 }
 
@@ -73,15 +73,16 @@ function GuessBox() {
 
             .then(result => {
                 let parsed_res = JSON.parse(result);
+                console.log("Parsed res: ", parsed_res.toString());
                 if (parsed_res == "") {
                     alert("No Match Found");
                 }
                 else {
                     let parsed_body = JSON.parse(parsed_res.body);
-                    // alert(parsed_body);
-                    // console.log(parsed_body.Item);
                     let inner = parsed_body.Item;
+                    console.log("parsed_body.Item:  ", inner.toString());
                     let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
+                    
                     alert(guessedItem.toString());
                     console.log(guessedItem.toString());
                 }
