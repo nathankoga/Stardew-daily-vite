@@ -45,7 +45,7 @@ function GuessBox() {
             headers: headers,
             redirect: 'follow'
         })
-
+        console.log("sending request:", getURL.toString())
         /*  For POST requests, include the body
         const requestOptions: RequestInfo = new Request("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage", {
             method: "GET",
