@@ -39,7 +39,9 @@ function GuessBox() {
         let getURL = new URL("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage");
         getURL.searchParams.append('ID', guess);
 
-        // send a Request to the API
+        // send a Request to the API  
+        // NOTE: In the future, selecting "use lambda proxy integration" makes event handling easier
+        //       (No?) more need to set up method and integration request formats and mappings by hand
         const requestOptions: RequestInfo = new Request(getURL, {
             method: "GET",
             headers: headers,
@@ -58,6 +60,7 @@ function GuessBox() {
         fetch(requestOptions)
             .then(response => {
                 console.log("got response: ", response)
+                console.log("body:", response['body'])
             })
             .catch(error => console.log("error", error));
         
