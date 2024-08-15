@@ -61,8 +61,9 @@ function GuessBox() {
             .then(response => response.text())
 
             .then(result => {
-                let parsed_res = JSON.parse(result).body.Item;
+                let parsed_res = JSON.parse(result).body;
                 alert(parsed_res);
+                console.log(parsed_res.Item);
                 // let returnEntity: GuessEntity = JSON.parse(parsed_res);
                 // console.log(returnEntity.toString());
             })
