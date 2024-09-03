@@ -4,7 +4,6 @@
  */
 // 
 import {useState} from 'react';
-
 import ResponseGrid from './ResponseGrid.tsx'
 
 
@@ -49,8 +48,9 @@ function GuessBox() {
     // state variables for the text within the input box 
     const [guess, setGuess] = useState("");
     const [turn, setTurn] = useState(0);
-    const [prevGuesses, setPrevGuesses] = ([...Array(4)]);  // update these with the compare arrays
-
+    const [prevGuesses, setPrevGuesses] = useState([...Array(4)]);  // update these with the compare arrays
+    // const [matchBool, setMatchBool] = useState(false);
+    
     function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
         // when the textbox value is changed, update the guess variable to whatever is inside the textbox
         // call REST GET method to fetch from database

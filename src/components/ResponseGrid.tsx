@@ -16,7 +16,7 @@ type ResponseRowProps = {
 function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // a singular response row for guesses, rendered at location based off of rowIndex
     // each row has 4 divs based off of each guess value
-    console.log(guess, rowIndex);
+    console.log("ResponseRow rendered: ", guess, rowIndex);
     return (
         <div className="responseRow">
             <div></div>
@@ -38,8 +38,8 @@ function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) {
     // hooks into GuessBox, and responds to the onClick
     // ResponseTable component takes all guesses from GuessBox entries, 
     // and is a container that renders each ResponseRow() object 
-    console.log(currentGuess);
-    console.log(currentTurn);
+    console.log("ResponseGrid currentGuess: ", currentGuess);
+    console.log("ResponseGrid currentTurn: ", currentTurn);
     /* function updateResponseGrid() {
     }*/
 
