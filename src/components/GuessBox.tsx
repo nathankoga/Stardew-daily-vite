@@ -45,6 +45,8 @@ class GuessEntity {
 
 function GuessBox() {
 
+    const answer = new GuessEntity("starfruit", "farming", "summer", 750);
+
     // state variables for the text within the input box 
     const [guess, setGuess] = useState("");
     const [turn, setTurn] = useState(0);
@@ -88,13 +90,19 @@ function GuessBox() {
                 let parsed_body = JSON.parse(parsed_res.body);
                 let inner = parsed_body.Item;
 
-                // if item exists, inner is fruitful
+                // if item exists, inner is fruitful => valid guess, so move forward in game loop
                 if (inner){
                     console.log("parsed_body.Item:  ", inner.toString());
                     let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
                 
-                    alert(guessedItem.toString());
+                    // alert(guessedItem.toString());
                     console.log(guessedItem.toString());
+                    
+                    // now check guess against the solution
+                    let correctnessArray = guessedItem.compare(answer);
+                    console.log("Correctness check: ", correctnessArray);
+                    setTurn(turn + 1);  // turn logic to determine which grid to place on
+                    setPrevGuesses(correctnessArray);
                 }
                 // otherwise, item was not found
                 else{
@@ -115,8 +123,7 @@ function GuessBox() {
             redirect: 'follow'
         })
         */
-        setTurn(turn + 1);  // turn logic to determine which grid to place on
-        setPrevGuesses([false,false,false, "="]);
+        
         console.log("submitHandler finished");
 
     }  // end of submitHandler

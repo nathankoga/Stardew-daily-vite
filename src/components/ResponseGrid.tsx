@@ -19,10 +19,10 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     console.log("ResponseRow rendered: ", guess, rowIndex);
     return (
         <div className="responseRow">
-            <div>{rowIndex}</div>
-            <div>{rowIndex}</div>
-            <div>{rowIndex}</div>
-            <div>{rowIndex}</div>
+            <div>{guess[0]}</div>
+            <div>{guess[1]}</div>
+            <div>{guess[2]}</div>
+            <div>{guess[3]}</div>
 
         </div>
     )
