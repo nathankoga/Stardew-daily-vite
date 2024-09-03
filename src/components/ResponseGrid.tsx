@@ -17,13 +17,24 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // a singular response row for guesses, rendered at location based off of rowIndex
     // each row has 4 divs based off of each guess value
     console.log("ResponseRow rendered: ", guess, rowIndex);
-    return (
+
+    if (guess) {
+        return (
         <div className="responseRow">
             <div>{guess[0]}</div>
             <div>{guess[1]}</div>
             <div>{guess[2]}</div>
             <div>{guess[3]}</div>
+        </div>
+        )
+    }
 
+    return (
+        <div className="responseRow">
+            <div>" "</div>
+            <div>" "</div>
+            <div>" "</div>
+            <div>" "</div>
         </div>
     )
 }
