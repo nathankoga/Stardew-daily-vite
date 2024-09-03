@@ -5,6 +5,8 @@
 // 
 import {useState} from 'react';
 
+import ResponseGrid from './ResponseGrid.tsx'
+
 
 class GuessEntity {
     ID: string;
@@ -20,7 +22,24 @@ class GuessEntity {
     }
 
     toString() {
-        return `${this.ID}: ${this.profession}, ${this.season}, ${this.sellPrice} G`;
+        return `${this.ID}: ${this.profession}, ${this.season}, ${this.sellPrice}G`;
+    }
+
+    compare(target: GuessEntity) {
+        // compare this guess entity to the answer item
+        // returnTuple: [boolean, boolean, boolean, string];
+        let price_char = '';
+        if (this.sellPrice > target.sellPrice) {
+            price_char = ">";
+        }
+        else if (this.sellPrice < target.sellPrice) {
+            price_char = "<";
+        }
+        else {
+            price_char = "=";
+        }
+        
+        return [this.ID == target.ID, this.profession == target.profession, this.season == target.season, price_char];
     }
 }
 
@@ -29,6 +48,8 @@ function GuessBox() {
 
     // state variables for the text within the input box 
     const [guess, setGuess] = useState("");
+    const [turn, setTurn] = useState(0);
+    const [prevGuesses, setPrevGuesses] = ([...Array(4)]);  // update these with the compare arrays
 
     function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
         // when the textbox value is changed, update the guess variable to whatever is inside the textbox
@@ -50,15 +71,42 @@ function GuessBox() {
         let getURL = new URL("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage");
         getURL.searchParams.append('ID', guess);
 
-        // send a Request to the API  
-        // NOTE: In the future, selecting "use lambda proxy integration" makes event handling easier
-        //       (No?) more need to set up method and integration request formats and mappings by hand
+        // send a GET Request to the API  
         const requestOptions: RequestInfo = new Request(getURL, {
             method: "GET",
             headers: headers,
             redirect: 'follow'
         })
         console.log("sending request:", getURL.toString())
+
+        fetch(requestOptions)
+            .then(response => response.text())  // pull the request response into text
+
+            .then(result => {  // catch that reponse into result
+                let parsed_res = JSON.parse(result);  
+                console.log("Parsed res: ", parsed_res.toString());
+                let parsed_body = JSON.parse(parsed_res.body);
+                let inner = parsed_body.Item;
+
+                // if item exists, inner is fruitful
+                if (inner){
+                    console.log("parsed_body.Item:  ", inner.toString());
+                    let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
+                
+                    alert(guessedItem.toString());
+                    console.log(guessedItem.toString());
+                }
+                // otherwise, item was not found
+                else{
+                    alert(`${guess} not found.`);
+                }
+                // let returnEntity: GuessEntity = JSON.parse(parsed_res);
+                // console.log(returnEntity.toString());
+            })
+
+            .catch(error => console.log('error', error));
+
+        // call POST request for storing guess info to database
         /*  For POST requests, include the body
         const requestOptions: RequestInfo = new Request("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage", {
             method: "GET",
@@ -67,54 +115,11 @@ function GuessBox() {
             redirect: 'follow'
         })
         */
-
-        fetch(requestOptions)
-            .then(response => response.text())
-
-            .then(result => {
-                let parsed_res = JSON.parse(result);
-                console.log("Parsed res: ", parsed_res.toString());
-                
-                let parsed_body = JSON.parse(parsed_res.body);
-                let inner = parsed_body.Item;
-                if (inner){
-                    console.log("parsed_body.Item:  ", inner.toString());
-                    let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
-                
-                    alert(guessedItem.toString());
-                    console.log(guessedItem.toString());
-                }
-                else{
-                    alert("Item not found");
-                }
-                // let returnEntity: GuessEntity = JSON.parse(parsed_res);
-                // console.log(returnEntity.toString());
-            })
-
-            .catch(error => console.log('error', error));
-
-
-            // .then(response => {
-
-            //     let getResponse : ReadableStream = response.json();
-            //     console.log("response.json ==>", getResponse);
-            //     // figure out promise --> probably refactor code with this website (https://medium.com/@diegogauna.developer/restful-api-using-typescript-and-react-hooks-3d99bdd0cd39)
-            //     // or this website (https://kentcdodds.com/blog/using-fetch-with-type-script)
-            //     let item = getResponse['Item'];
-            //     // console.log("fetching body: ", getResponse['body']);
-            //     // console.log("got response: ", response)
-            //     // console.log("body:", response.json())
-            //     alert()
-                
-            // })
-            // .catch(error => console.log("error", error));
-        
-        // console.log("submission: {%s}", guess);
-
-        // call REST POST API to store guess info
+        setTurn(turn + 1);  // turn logic to determine which grid to place on
+        setPrevGuesses([false,false,false, "="]);
         console.log("submitHandler finished");
 
-    }
+    }  // end of submitHandler
 
     return (
         <div>
@@ -126,6 +131,7 @@ function GuessBox() {
                     />
 
             <input type="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
+            <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
         </div>
     )
 }

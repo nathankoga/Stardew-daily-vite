@@ -66,3 +66,20 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Response Row Styling */
+.responseRow {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.responseRow > div {
+  display: block;
+  width:60px;
+  height:60px;
+  margin: 4px;
+  text-align: center;
+  line-height: 60px;
+  color:#747bff;
+}
