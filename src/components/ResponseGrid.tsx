@@ -1,6 +1,6 @@
 // import {useState} from 'react';
 import "./grid.css"; 
-
+// compare with https://github.com/iamshaunjp/React-Wordle/blob/lesson-16/src/hooks/useWordle.js
 type GridProps = {
     currentGuess: string; 
     previousGuesses: Array< {id: number, values: Array<string | boolean | null>}>;
@@ -21,9 +21,9 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     if (guess) {
         return (
         <div className="responseRow">
-            <div>{guess[0]}</div>
-            <div>{guess[1]}</div>
-            <div>{guess[2]}</div>
+            <div>{guess[0]?.toString()}</div>
+            <div>{guess[1]?.toString()}</div>
+            <div>{guess[2]?.toString()}</div>
             <div>{guess[3]}</div>
         </div>
         )
