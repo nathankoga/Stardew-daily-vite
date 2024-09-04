@@ -8,7 +8,8 @@ type GridProps = {
 }
 
 type ResponseRowProps = {
-    guess: [boolean, boolean,boolean, string];  // singular guess deconstructed into a tuple
+    // guess: [boolean, boolean,boolean, string];  // singular guess deconstructed into a tuple
+    guess: Array<string | boolean | null>;  // singular guess deconstructed into a tuple
     rowIndex: number;
 }
 
