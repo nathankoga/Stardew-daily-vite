@@ -1,7 +1,6 @@
 // import {useState} from 'react';
 import "./grid.css"; 
 
-
 type GridProps = {
     currentGuess: string; 
     previousGuesses: Array<[boolean, boolean,boolean, string]>;
@@ -31,10 +30,10 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
 
     return (
         <div className="responseRow">
-            <div>" "</div>
-            <div>" "</div>
-            <div>" "</div>
-            <div>" "</div>
+            <div> </div>
+            <div> </div>
+            <div> </div>
+            <div> </div>
         </div>
     )
 }

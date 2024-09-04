@@ -6,6 +6,7 @@
 import {useState} from 'react';
 import ResponseGrid from './ResponseGrid.tsx'
 
+// .type GuessValu
 
 class GuessEntity {
     ID: string;
@@ -37,9 +38,23 @@ class GuessEntity {
         else {
             price_char = "=";
         }
-        
-        return [this.ID == target.ID, this.profession == target.profession, this.season == target.season, price_char];
+        let ret_vals: Array<string | boolean | null> = [this.ID == target.ID, this.profession == target.profession, this.season == target.season, price_char];
+        // return [this.ID == target.ID, this.profession == target.profession, this.season == target.season, price_char];
+        return ret_vals;
     }
+}
+
+function createInitialGuesses() {
+    // initialize the state for the allowed num_guesses
+    let num_guesses = 5;
+    const initialGuesses = [];
+    for (let i = 0; i < num_guesses; i++) {
+        let vals: Array<string | boolean | null> = [null, null, null, null];
+        //  initialGuesses.push({ id: i, values: [null, null, null, null]});
+        initialGuesses.push({ id: i, values: vals});
+    }
+
+    return initialGuesses;
 }
 
 
@@ -50,7 +65,8 @@ function GuessBox() {
     // state variables for the text within the input box 
     const [guess, setGuess] = useState("");
     const [turn, setTurn] = useState(0);
-    const [prevGuesses, setPrevGuesses] = useState([...Array(4)]);  // update these with the compare arrays
+    // const [prevGuesses, setPrevGuesses] = useState([...Array(4)]);  // update these with the compare arrays
+    const [prevGuesses, setPrevGuesses] = useState(createInitialGuesses); 
     // const [matchBool, setMatchBool] = useState(false);
     
     function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
@@ -95,14 +111,32 @@ function GuessBox() {
                     console.log("parsed_body.Item:  ", inner.toString());
                     let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
                 
-                    // alert(guessedItem.toString());
                     console.log(guessedItem.toString());
                     
                     // now check guess against the solution
                     let correctnessArray = guessedItem.compare(answer);
+                    
+                    // rebuild the new array (treat state objects as read only, so rebuild)
+                    const newGuessesArray = prevGuesses.map(item => {
+                        if (item.id === turn) {
+                            return {
+                                ...item,
+                                id: turn,
+                                values: correctnessArray,
+                            };
+                        }
+                        else {
+                            return item;
+                        }
+                        
+                    })
+                    
+                    // setPrevGuesses([correctnessArray, ...prevGuesses]);
+                    setPrevGuesses(newGuessesArray);
                     console.log("Correctness check: ", correctnessArray);
-                    setTurn(turn + 1);  // turn logic to determine which grid to place on
-                    setPrevGuesses(correctnessArray);
+                    console.log("previous guesses:", prevGuesses);
+                    setTurn(i => i + 1);  // turn logic to determine which grid to place on
+                    
                 }
                 // otherwise, item was not found
                 else{
