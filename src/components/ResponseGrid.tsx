@@ -3,7 +3,7 @@ import "./grid.css";
 // compare with https://github.com/iamshaunjp/React-Wordle/blob/lesson-16/src/hooks/useWordle.js
 type GridProps = {
     currentGuess: string; 
-    previousGuesses: Array< {id: number, values: Array<string | boolean | null>}>;
+    previousGuesses: Array< {guess_num: number, values: Array<string | boolean | null>}>;
     currentTurn: number;
 }
 
@@ -16,6 +16,7 @@ type ResponseRowProps = {
 function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // a singular response row for guesses, rendered at location based off of rowIndex
     // each row has 4 divs based off of each guess value
+    // [name, profession, season{s}, price]
     console.log("ResponseRow rendered: ", guess, rowIndex);
 
     if (guess) {

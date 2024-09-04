@@ -6,7 +6,6 @@
 import {useState} from 'react';
 import ResponseGrid from './ResponseGrid.tsx'
 
-// .type GuessValu
 
 class GuessEntity {
     ID: string;
@@ -38,8 +37,9 @@ class GuessEntity {
         else {
             price_char = "=";
         }
-        let ret_vals: Array<string | boolean | null> = [this.ID == target.ID, this.profession == target.profession, this.season == target.season, price_char];
-        // return [this.ID == target.ID, this.profession == target.profession, this.season == target.season, price_char];
+        let ret_vals: Array<string | boolean | null> = [this.ID == target.ID, 
+            this.profession == target.profession, 
+            this.season == target.season, price_char];
         return ret_vals;
     }
 }
@@ -50,8 +50,13 @@ function createInitialGuesses() {
     const initialGuesses = [];
     for (let i = 0; i < num_guesses; i++) {
         let vals: Array<string | boolean | null> = [null, null, null, null];
+        
+        // random set the last one differently s.t. we can see if this array is pushed off when new answers given
+        if (i === (num_guesses -1)){
+            vals = [true, true, true, true];    
+        }
         //  initialGuesses.push({ id: i, values: [null, null, null, null]});
-        initialGuesses.push({ id: i, values: vals});
+        initialGuesses.push({ guess_num: i, values: vals});
     }
 
     return initialGuesses;
@@ -60,20 +65,21 @@ function createInitialGuesses() {
 
 function GuessBox() {
 
+    // figure out how to pick answer differently in future 
     const answer = new GuessEntity("starfruit", "farming", "summer", 750);
 
     // state variables for the text within the input box 
     const [guess, setGuess] = useState("");
     const [turn, setTurn] = useState(0);
-    // const [prevGuesses, setPrevGuesses] = useState([...Array(4)]);  // update these with the compare arrays
     const [prevGuesses, setPrevGuesses] = useState(createInitialGuesses); 
+    const [usedItems, setUsedItems] = useState<string[]>([]);
     // const [matchBool, setMatchBool] = useState(false);
     
     function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
         // when the textbox value is changed, update the guess variable to whatever is inside the textbox
         // call REST GET method to fetch from database
         setGuess(event.target.value);
-        console.log("Current: ", guess)
+        console.log("Current: ", guess);
     }
 
     const submitHandler = () => {
@@ -97,10 +103,11 @@ function GuessBox() {
         })
         console.log("sending request:", getURL.toString())
 
+        // wait for response
         fetch(requestOptions)
             .then(response => response.text())  // pull the request response into text
 
-            .then(result => {  // catch that reponse into result
+            .then(result => {  // catch reponse into result
                 let parsed_res = JSON.parse(result);  
                 console.log("Parsed res: ", parsed_res.toString());
                 let parsed_body = JSON.parse(parsed_res.body);
@@ -113,37 +120,44 @@ function GuessBox() {
                 
                     console.log(guessedItem.toString());
                     
-                    // now check guess against the solution
                     let correctnessArray = guessedItem.compare(answer);
                     
-                    // rebuild the new array (treat state objects as read only, so rebuild)
-                    const newGuessesArray = prevGuesses.map(item => {
-                        if (item.id === turn) {
-                            return {
-                                ...item,
-                                id: turn,
-                                values: correctnessArray,
-                            };
+                    if (correctnessArray[0] === true) {
+                        alert("match! Game won");
+                        // figure out how to disable text box and end game
+                    }
+
+                    else if (guessedItem.ID in usedItems) {
+                        console.log("already guessed, skip");
+                    }                    
+                    else {  // otherwise, we have a new incorrect guess
+                        if (turn === 5) {
+                            alert("game lost.");
                         }
-                        else {
-                            return item;
-                        }
+                        // rebuild the new array (treat state objects as read only, so rebuild)
+                        const newGuessesArray = prevGuesses.map(item => {
+                            if (item.guess_num === turn) {
+                                return {
+                                    ...item,
+                                    id: turn, values: correctnessArray,
+                                };
+                            }
+                            else {
+                                return item;
+                            }
+                        })
                         
-                    })
-                    
-                    // setPrevGuesses([correctnessArray, ...prevGuesses]);
-                    setPrevGuesses(newGuessesArray);
-                    console.log("Correctness check: ", correctnessArray);
-                    console.log("previous guesses:", prevGuesses);
-                    setTurn(i => i + 1);  // turn logic to determine which grid to place on
-                    
+                        setPrevGuesses(newGuessesArray);
+                        setUsedItems([...usedItems, guessedItem.ID]);
+                        console.log("Correctness check: ", correctnessArray);
+                        console.log("previous guesses:", prevGuesses);
+                        setTurn(i => i + 1);  // turn logic to determine which grid to place on
+                    }
                 }
                 // otherwise, item was not found
                 else{
                     alert(`${guess} not found.`);
                 }
-                // let returnEntity: GuessEntity = JSON.parse(parsed_res);
-                // console.log(returnEntity.toString());
             })
 
             .catch(error => console.log('error', error));
