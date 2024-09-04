@@ -3,7 +3,7 @@ import "./grid.css";
 
 type GridProps = {
     currentGuess: string; 
-    previousGuesses: Array<[boolean, boolean,boolean, string]>;
+    previousGuesses: Array< {id: number, values: Array<string | boolean | null>}>;
     currentTurn: number;
 }
 
@@ -57,7 +57,7 @@ function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) {
     return (
         <div>
             {previousGuesses.map((g, idx) => {
-                return <ResponseRow guess={g} rowIndex = {idx}/>
+                return <ResponseRow guess={g.values} rowIndex = {idx}/>
             })}
         </div>
     )
