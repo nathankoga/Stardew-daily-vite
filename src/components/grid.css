@@ -1,4 +1,20 @@
 /* Response Row Styling */
+.rowLabels {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.rowLabels > div {
+    display: block;
+    width:60px;
+    height:60px;
+    border: 1px solid #bbb;
+    margin: 4px;
+    text-align: center;
+    line-height: 60px;
+}
+
 .responseRow {
     text-align: center;
     display: flex;
@@ -42,4 +58,8 @@
 
 .greater {
     background-color: aqua;
+}
+
+.partial {
+    background-color: orange;
 }

@@ -29,13 +29,10 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
             
             <div className={guess[0]?.toString()}></div>
             <div className={guess[1]?.toString()}></div>
+            <div className={guess[2]?.toString()}></div>
             <div className={guess[3]?.toString()}></div>
-            <div className={guess[4]?.toString()}></div>
         </div>
         )
-            //<div>{guess[1]?.toString()}</div>
-            //<div>{guess[2]?.toString()}</div>
-            //<div>{guess[3]}</div>
     // }
 
     // add pop-up animation when rendering current guess (possibly) 
@@ -53,7 +50,6 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
 
 
 function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) { 
-    //{currentGuess: string, previousGuesses: Array<[]>} ) {
     // state variables for current guess
     // const [currentResponse, updateResponse] = useState([]);
 
@@ -62,11 +58,19 @@ function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) {
     // and is a container that renders each ResponseRow() object 
     console.log("ResponseGrid currentGuess: ", currentGuess);
     console.log("ResponseGrid currentTurn: ", currentTurn);
+
     /* function updateResponseGrid() {
     }*/
 
     return (
         <div>
+            <div className="rowLabels"> 
+                <div > Item </div>
+                <div > Profession </div>
+                <div > Season</div>
+                <div > Price </div>
+            </div> 
+
             {previousGuesses.map((g, idx) => {
                 return <ResponseRow guess={g.values} rowIndex = {idx}/>
             })}

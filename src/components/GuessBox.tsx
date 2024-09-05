@@ -127,19 +127,11 @@ function GuessBox() {
                     
                     let correctnessArray = guessedItem.compare(answer);
                     
-                    if (correctnessArray[0] === true) {
-                        alert("match! Game won");
-                        // figure out how to disable text box and end game
-                    }
-
-                    else if (usedItems.includes(guessedItem.ID)) {
+                    if (usedItems.includes(guessedItem.ID)) {
                         alert("already guessed, skip");
                     }                    
-                    else {  // otherwise, we have a new incorrect guess
-                        if (turn === 4) {
-                            alert("game lost.");
-                        }
-                        // rebuild the new array (treat state objects as read only, so rebuild)
+                    else {  // otherwise, we have a new guess
+                        // rebuild a new array (treat state objects as read only, so rebuild)
                         const newGuessesArray = prevGuesses.map(item => {
                             if (item.guess_num === turn) {
                                 return {
@@ -151,13 +143,22 @@ function GuessBox() {
                                 return item;
                             }
                         })
-                        
+
+                        // update prevGuesses with rebuilt array
                         setPrevGuesses(newGuessesArray);
                         setUsedItems([...usedItems, guessedItem.ID]);
                         console.log("previous guess items: ", usedItems);
-                        // console.log("Correctness check: ", correctnessArray);
-                        // console.log("previous guesses:", prevGuesses);
-                        setTurn(i => i + 1);  // turn logic to determine which grid to place on
+                       
+                        if (correctnessArray[0] === true) {  // win condition
+                            alert("match! Game won");
+                            // figure out how to disable text box and end game
+                        }
+
+                        else if (turn === 4) {  // loss condition
+                            alert("game lost.");
+                        }
+                        setTurn(i => i + 1);  
+                        // update turn logic 
                     }
                 }
                 // otherwise, item was not found
