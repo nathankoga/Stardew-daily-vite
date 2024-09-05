@@ -22,3 +22,23 @@
 .validResponse > div {
     background-color:#747bff;
 }
+
+.true {
+    background-color:green;
+}
+
+.false {
+    background-color: red;
+}
+
+.equal {
+    background-color: green;
+}
+
+.less {
+    background-color: aquamarine;
+}
+
+.greater {
+    background-color: aqua;
+}

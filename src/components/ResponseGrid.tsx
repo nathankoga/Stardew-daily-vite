@@ -19,18 +19,27 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // [name, profession, season{s}, price]
     console.log("ResponseRow rendered: ", guess, rowIndex);
 
+    // pre-define render values here??
+
+    // render past guesses automatically
     // next add conditional rendering to each inner div based off of specific rules
-    if (guess) {
+    // if (guess[0]) {
         return (
         <div className="responseRow validResponse">
-            <div>{guess[0]?.toString()}</div>
-            <div>{guess[1]?.toString()}</div>
-            <div>{guess[2]?.toString()}</div>
-            <div>{guess[3]}</div>
+            
+            <div className={guess[0]?.toString()}></div>
+            <div className={guess[1]?.toString()}></div>
+            <div className={guess[3]?.toString()}></div>
+            <div className={guess[4]?.toString()}></div>
         </div>
         )
-    }
+            //<div>{guess[1]?.toString()}</div>
+            //<div>{guess[2]?.toString()}</div>
+            //<div>{guess[3]}</div>
+    // }
 
+    // add pop-up animation when rendering current guess (possibly) 
+    /*
     return (
         <div className="responseRow emptyResponse">
             <div> </div>
@@ -38,7 +47,7 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
             <div> </div>
             <div> </div>
         </div>
-    )
+    )*/
 }
 
 

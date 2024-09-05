@@ -34,13 +34,13 @@ class GuessEntity {
         // returnTuple: [boolean, boolean, boolean, string];
         let price_char = '';
         if (this.sellPrice > target.sellPrice) {
-            price_char = ">";
+            price_char = "greater";
         }
         else if (this.sellPrice < target.sellPrice) {
-            price_char = "<";
+            price_char = "less";
         }
         else {
-            price_char = "=";
+            price_char = "equal";
         }
         let ret_vals: Array<string | boolean | null> = [this.ID == target.ID, 
             this.profession == target.profession, 
@@ -84,13 +84,9 @@ function GuessBox() {
     const submitHandler = () => {
         // handler that looks for a submission ==> call API to search DB for desired item
         // call REST GET API to compare values of guess item and actual item
-        
+        const guessToLower = guess.toLowerCase();
         // prelim check for only lowercase
-        if (isAlpha(guess)) {
-            // set to lower
-            setGuess(guess.toLowerCase());
-        }
-        else {
+        if ( !(isAlpha(guess)) ) {
             alert("Only input alphabet characters!");
             return
         }
@@ -102,7 +98,7 @@ function GuessBox() {
 
         // create url and add parameters for API search 
         let getURL = new URL("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage");
-        getURL.searchParams.append('ID', guess);
+        getURL.searchParams.append('ID', guessToLower);
 
         // send a GET Request to the API  
         const requestOptions: RequestInfo = new Request(getURL, {
@@ -137,7 +133,7 @@ function GuessBox() {
                     }
 
                     else if (usedItems.includes(guessedItem.ID)) {
-                        console.log("already guessed, skip");
+                        alert("already guessed, skip");
                     }                    
                     else {  // otherwise, we have a new incorrect guess
                         if (turn === 4) {
