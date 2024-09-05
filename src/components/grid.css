@@ -20,7 +20,8 @@
 }
 
 .validResponse > div {
-    background-color:#747bff;
+    /*background-color:#747bff;*/
+    border: 1px solid black;
 }
 
 .true {
