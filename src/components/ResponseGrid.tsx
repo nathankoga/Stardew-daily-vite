@@ -19,9 +19,10 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // [name, profession, season{s}, price]
     console.log("ResponseRow rendered: ", guess, rowIndex);
 
+    // next add conditional rendering to each inner div based off of specific rules
     if (guess) {
         return (
-        <div className="responseRow">
+        <div className="responseRow validResponse">
             <div>{guess[0]?.toString()}</div>
             <div>{guess[1]?.toString()}</div>
             <div>{guess[2]?.toString()}</div>
@@ -31,7 +32,7 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     }
 
     return (
-        <div className="responseRow">
+        <div className="responseRow emptyResponse">
             <div> </div>
             <div> </div>
             <div> </div>

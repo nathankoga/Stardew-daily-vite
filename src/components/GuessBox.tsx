@@ -7,6 +7,11 @@ import {useState} from 'react';
 import ResponseGrid from './ResponseGrid.tsx'
 
 
+function isAlpha(str:string) {
+    // regex search to confirm only alpha characters
+    return /^[a-zA-Z]+$/.test(str);
+}
+
 class GuessEntity {
     ID: string;
     profession: string;
@@ -50,12 +55,6 @@ function createInitialGuesses() {
     const initialGuesses = [];
     for (let i = 0; i < num_guesses; i++) {
         let vals: Array<string | boolean | null> = [null, null, null, null];
-        
-        // random set the last one differently s.t. we can see if this array is pushed off when new answers given
-        if (i === (num_guesses -1)){
-            vals = [true, true, true, true];    
-        }
-        //  initialGuesses.push({ id: i, values: [null, null, null, null]});
         initialGuesses.push({ guess_num: i, values: vals});
     }
 
@@ -86,6 +85,16 @@ function GuessBox() {
         // handler that looks for a submission ==> call API to search DB for desired item
         // call REST GET API to compare values of guess item and actual item
         
+        // prelim check for only lowercase
+        if (isAlpha(guess)) {
+            // set to lower
+            setGuess(guess.toLowerCase());
+        }
+        else {
+            alert("Only input alphabet characters!");
+            return
+        }
+        
         // create header for GET request
         const headers = new Headers();
         headers.set('Content-Type', 'application/json');
@@ -109,16 +118,16 @@ function GuessBox() {
 
             .then(result => {  // catch reponse into result
                 let parsed_res = JSON.parse(result);  
-                console.log("Parsed res: ", parsed_res.toString());
+                // console.log("Parsed res: ", parsed_res.toString());
                 let parsed_body = JSON.parse(parsed_res.body);
                 let inner = parsed_body.Item;
 
                 // if item exists, inner is fruitful => valid guess, so move forward in game loop
                 if (inner){
-                    console.log("parsed_body.Item:  ", inner.toString());
+                    // console.log("parsed_body.Item:  ", inner.toString());
                     let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
                 
-                    console.log(guessedItem.toString());
+                    console.log("Guessed item: ", guessedItem.toString());
                     
                     let correctnessArray = guessedItem.compare(answer);
                     
@@ -127,11 +136,11 @@ function GuessBox() {
                         // figure out how to disable text box and end game
                     }
 
-                    else if (guessedItem.ID in usedItems) {
+                    else if (usedItems.includes(guessedItem.ID)) {
                         console.log("already guessed, skip");
                     }                    
                     else {  // otherwise, we have a new incorrect guess
-                        if (turn === 5) {
+                        if (turn === 4) {
                             alert("game lost.");
                         }
                         // rebuild the new array (treat state objects as read only, so rebuild)
@@ -149,8 +158,9 @@ function GuessBox() {
                         
                         setPrevGuesses(newGuessesArray);
                         setUsedItems([...usedItems, guessedItem.ID]);
-                        console.log("Correctness check: ", correctnessArray);
-                        console.log("previous guesses:", prevGuesses);
+                        console.log("previous guess items: ", usedItems);
+                        // console.log("Correctness check: ", correctnessArray);
+                        // console.log("previous guesses:", prevGuesses);
                         setTurn(i => i + 1);  // turn logic to determine which grid to place on
                     }
                 }

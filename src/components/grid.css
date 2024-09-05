@@ -13,5 +13,12 @@
     margin: 4px;
     text-align: center;
     line-height: 60px;
+}
+
+.emptyResponse > div {
+    background-color:gray;
+}
+
+.validResponse > div {
     background-color:#747bff;
 }
