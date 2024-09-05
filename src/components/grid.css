@@ -7,12 +7,11 @@
 
 .rowLabels > div {
     display: block;
-    width:60px;
-    height:60px;
-    border: 1px solid #bbb;
+    width:90px;
+    height:40px;
     margin: 4px;
     text-align: center;
-    line-height: 60px;
+    line-height: 40px;
 }
 
 .responseRow {
@@ -23,12 +22,12 @@
   
 .responseRow > div {
     display: block;
-    width:60px;
-    height:60px;
+    width:90px;
+    height:90px;
     border: 1px solid #bbb;
     margin: 4px;
     text-align: center;
-    line-height: 60px;
+    line-height: 90px;
 }
 
 .emptyResponse > div {

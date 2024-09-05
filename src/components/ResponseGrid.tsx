@@ -23,14 +23,15 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
 
     // render past guesses automatically
     // next add conditional rendering to each inner div based off of specific rules
+    // guess[0] contains name of item ==> future bitmap search --> OR we send a tuple pair of bitmap instead
     // if (guess[0]) {
         return (
         <div className="responseRow validResponse">
             
-            <div className={guess[0]?.toString()}></div>
             <div className={guess[1]?.toString()}></div>
             <div className={guess[2]?.toString()}></div>
             <div className={guess[3]?.toString()}></div>
+            <div className={guess[4]?.toString()}></div>
         </div>
         )
     // }

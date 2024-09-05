@@ -5,6 +5,7 @@
 // 
 import {useState} from 'react';
 import ResponseGrid from './ResponseGrid.tsx'
+import AdminPostBox from './admin.tsx'
 
 
 function isAlpha(str:string) {
@@ -42,7 +43,7 @@ class GuessEntity {
         else {
             price_char = "equal";
         }
-        let ret_vals: Array<string | boolean | null> = [this.ID == target.ID, 
+        let ret_vals: Array<string | boolean | null> = [this.ID, this.ID == target.ID, 
             this.profession == target.profession, 
             this.season == target.season, price_char];
         return ret_vals;
@@ -149,8 +150,9 @@ function GuessBox() {
                         setUsedItems([...usedItems, guessedItem.ID]);
                         console.log("previous guess items: ", usedItems);
                        
-                        if (correctnessArray[0] === true) {  // win condition
-                            alert("match! Game won");
+                        // correctnessArray[1] stores whether or not it's a match
+                        if (correctnessArray[1] === true) {  // win condition
+                            // alert("match! Game won");
                             // figure out how to disable text box and end game
                         }
 
@@ -194,6 +196,7 @@ function GuessBox() {
 
             <input type="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
             <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
+            <AdminPostBox></AdminPostBox>
         </div>
     )
 }
