@@ -1,4 +1,11 @@
 /* Response Row Styling */
+
+
+.stardewFont {
+    font-family: "SDV_font";
+    font-size: 1.4em;
+}
+
 .rowLabels {
     text-align: center;
     display: flex;
@@ -7,7 +14,7 @@
 
 .rowLabels > div {
     display: block;
-    width:90px;
+    width:100px;
     height:40px;
     margin: 4px;
     text-align: center;
@@ -22,8 +29,8 @@
   
 .responseRow > div {
     display: block;
-    width:90px;
-    height:90px;
+    width:100px;
+    height:100px;
     border: 1px solid #bbb;
     margin: 4px;
     text-align: center;
@@ -40,11 +47,11 @@
 }
 
 .true {
-    background-color:green;
+    background-color: #88ce00;
 }
 
 .false {
-    background-color: red;
+    background-color: #fc1717;
 }
 
 .equal {

@@ -5,12 +5,12 @@
 // 
 import {useState} from 'react';
 import ResponseGrid from './ResponseGrid.tsx'
-import AdminPostBox from './admin.tsx'
+// import AdminPostBox from './admin.tsx'
 
 
 function isAlpha(str:string) {
-    // regex search to confirm only alpha characters
-    return /^[a-zA-Z]+$/.test(str);
+    // regex search to confirm only alpha characters (plus space)
+    return /^[a-zA-Z ]+$/.test(str);
 }
 
 class GuessEntity {
@@ -33,19 +33,43 @@ class GuessEntity {
     compare(target: GuessEntity) {
         // compare this guess entity to the answer item
         // returnTuple: [boolean, boolean, boolean, string];
-        let price_char = '';
+        let priceChar = '';
         if (this.sellPrice > target.sellPrice) {
-            price_char = "greater";
+            priceChar = "greater";
         }
         else if (this.sellPrice < target.sellPrice) {
-            price_char = "less";
+            priceChar = "less";
         }
         else {
-            price_char = "equal";
+            priceChar = "equal";
         }
-        let ret_vals: Array<string | boolean | null> = [this.ID, this.ID == target.ID, 
-            this.profession == target.profession, 
-            this.season == target.season, price_char];
+
+        // determine season string, since it may be multi-season
+        let seasonStr = "false";
+
+        if (this.season === target.season){
+            seasonStr = "true";
+        }
+        
+        // not a complete match ==> find partial match
+        else if (this.season.includes(",") || target.season.includes(",")){
+            const selfTokens = this.season.split(",");
+            const targetTokens = target.season.split(",");
+            for (let i = 0; i < selfTokens.length; i++){
+                for (let j = 0; j < targetTokens.length; j++){
+                    if (selfTokens[i] === targetTokens[j]){
+                        seasonStr = "partial";
+                    }
+                }
+            }
+        }
+        // NOTE: every season (fish / crop) is different from "none" season (ores)
+        // for every/multi-season crops and fish, where that "class" of object are associated to season
+        // it tokenizen on comma (,). forageables with NO inherent connection to season have "none" as season
+        // 
+
+        let ret_vals: Array<string | boolean | null> = [this.ID, this.profession, this.season, this.sellPrice.toString(),
+            this.ID == target.ID, this.profession == target.profession, seasonStr, priceChar];
         return ret_vals;
     }
 }
@@ -185,6 +209,7 @@ function GuessBox() {
 
     }  // end of submitHandler
 
+    // <adminPostBox></AdminPostBox>
     return (
         <div>
             <input type="text" 
@@ -196,7 +221,6 @@ function GuessBox() {
 
             <input type="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
             <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
-            <AdminPostBox></AdminPostBox>
         </div>
     )
 }

@@ -20,6 +20,8 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     console.log("ResponseRow rendered: ", guess, rowIndex);
 
     // pre-define render values here??
+    
+    // pull out guess[1] --> we could have multi-season items
 
     // render past guesses automatically
     // next add conditional rendering to each inner div based off of specific rules
@@ -27,11 +29,10 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // if (guess[0]) {
         return (
         <div className="responseRow validResponse">
-            
-            <div className={guess[1]?.toString()}></div>
-            <div className={guess[2]?.toString()}></div>
-            <div className={guess[3]?.toString()}></div>
-            <div className={guess[4]?.toString()}></div>
+            <div className={guess[4]?.toString()}> {guess[0]?.toString()}</div>
+            <div className={guess[5]?.toString()}> {guess[1]?.toString()}</div>
+            <div className={guess[6]?.toString()}> {guess[2]?.toString()}</div>
+            <div className={guess[7]?.toString()}> {guess[3]?.toString()}</div>
         </div>
         )
     // }
@@ -64,12 +65,12 @@ function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) {
     }*/
 
     return (
-        <div>
+        <div className="stardewFont">
             <div className="rowLabels"> 
-                <div > Item </div>
-                <div > Profession </div>
-                <div > Season</div>
-                <div > Price </div>
+                <div>Item</div>
+                <div>Profession</div>
+                <div>Season</div>
+                <div>Price</div>
             </div> 
 
             {previousGuesses.map((g, idx) => {

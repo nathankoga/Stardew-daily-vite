@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-    <h1 className="sdv_font">Welcome to Stardew Daily!</h1>
+    <h1 className="main_title">Welcome to Stardew Daily!</h1>
     <GuessBox />
     </>
   )
