@@ -3,7 +3,7 @@
 
 .stardewFont {
     font-family: "SDV_font";
-    font-size: 1.4em;
+    font-size: 1.65em;
 }
 
 .rowLabels {
@@ -28,13 +28,16 @@
 }
   
 .responseRow > div {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width:100px;
     height:100px;
     border: 1px solid #bbb;
     margin: 4px;
     text-align: center;
-    line-height: 90px;
+    overflow-wrap: anywhere;
+    line-height: 24px;
 }
 
 .emptyResponse > div {
@@ -44,28 +47,30 @@
 .validResponse > div {
     /*background-color:#747bff;*/
     border: 1px solid black;
+    color: rgb(245, 245, 245);
 }
 
 .true {
-    background-color: #88ce00;
+    /* background-color: #88ce00; */
+    background-color: #67a561;
 }
 
 .false {
-    background-color: #fc1717;
-}
-
-.equal {
-    background-color: green;
+    background-color: #e21411;
+    /* background-color: #858989; */
 }
 
 .less {
-    background-color: aquamarine;
+    background-color: #e21411;
+    /*content:url(../assets/noun-arrow-up-6619190.svg);*/
 }
 
 .greater {
-    background-color: aqua;
+    background-color: #e21411;
+    /* content: url(../assets/noun-arrow-down-6619175.svg); */
 }
 
 .partial {
-    background-color: orange;
+    /* background-color: orange; */
+    background-color: #db800d;
 }

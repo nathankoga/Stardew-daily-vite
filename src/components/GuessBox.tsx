@@ -3,7 +3,7 @@
  *      2: Optionally enable autocomplete pop-up under text box
  */
 // 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import ResponseGrid from './ResponseGrid.tsx'
 // import AdminPostBox from './admin.tsx'
 
@@ -17,9 +17,9 @@ class GuessEntity {
     ID: string;
     profession: string;
     season: string;
-    sellPrice: number;
+    sellPrice: string;
 
-    constructor(id: string, prof: string, seas: string, sell: number) {
+    constructor(id: string, prof: string, seas: string, sell: string) {
         this.ID = id;
         this.profession = prof;
         this.season = seas;
@@ -36,12 +36,14 @@ class GuessEntity {
         let priceChar = '';
         if (this.sellPrice > target.sellPrice) {
             priceChar = "greater";
+            this.sellPrice = "< " + this.sellPrice;
         }
         else if (this.sellPrice < target.sellPrice) {
             priceChar = "less";
+            this.sellPrice = "> " + this.sellPrice;
         }
         else {
-            priceChar = "equal";
+            priceChar = "true";
         }
 
         // determine season string, since it may be multi-season
@@ -68,7 +70,7 @@ class GuessEntity {
         // it tokenizen on comma (,). forageables with NO inherent connection to season have "none" as season
         // 
 
-        let ret_vals: Array<string | boolean | null> = [this.ID, this.profession, this.season, this.sellPrice.toString(),
+        let ret_vals: Array<string | boolean | null> = [this.ID, this.profession, this.season, this.sellPrice.toString() + "g",
             this.ID == target.ID, this.profession == target.profession, seasonStr, priceChar];
         return ret_vals;
     }
@@ -86,11 +88,26 @@ function createInitialGuesses() {
     return initialGuesses;
 }
 
+function getAPICall(inName: string) {
+    const loweredInput = inName.toLowerCase();
+        if ( !(isAlpha(loweredInput)) ) {
+            alert("Only input alphabet characters!");
+            return
+        }
+
+}
+
 
 function GuessBox() {
 
     // figure out how to pick answer differently in future 
-    const answer = new GuessEntity("starfruit", "farming", "summer", 750);
+    // on first-render hook, choose a random item out of 155
+    useEffect(() => {
+        console.log("INITIAL PAGE RENDER");
+
+
+    }, []);
+    const answer = new GuessEntity("starfruit", "farming", "summer", "750");
 
     // state variables for the text within the input box 
     const [guess, setGuess] = useState("");
@@ -146,7 +163,7 @@ function GuessBox() {
                 // if item exists, inner is fruitful => valid guess, so move forward in game loop
                 if (inner){
                     // console.log("parsed_body.Item:  ", inner.toString());
-                    let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice);
+                    let guessedItem = new GuessEntity(inner.ID, inner.profession, inner.season, inner.sellPrice.toString());
                 
                     console.log("Guessed item: ", guessedItem.toString());
                     
@@ -196,14 +213,6 @@ function GuessBox() {
             .catch(error => console.log('error', error));
 
         // call POST request for storing guess info to database
-        /*  For POST requests, include the body
-        const requestOptions: RequestInfo = new Request("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage", {
-            method: "GET",
-            headers: headers,
-            body: JSON.stringify({"ID":guess}),
-            redirect: 'follow'
-        })
-        */
         
         console.log("submitHandler finished");
 

@@ -19,10 +19,6 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // [name, profession, season{s}, price]
     console.log("ResponseRow rendered: ", guess, rowIndex);
 
-    // pre-define render values here??
-    
-    // pull out guess[1] --> we could have multi-season items
-
     // render past guesses automatically
     // next add conditional rendering to each inner div based off of specific rules
     // guess[0] contains name of item ==> future bitmap search --> OR we send a tuple pair of bitmap instead
@@ -31,11 +27,13 @@ function ResponseRow({guess, rowIndex}: ResponseRowProps) {
         <div className="responseRow validResponse">
             <div className={guess[4]?.toString()}> {guess[0]?.toString()}</div>
             <div className={guess[5]?.toString()}> {guess[1]?.toString()}</div>
-            <div className={guess[6]?.toString()}> {guess[2]?.toString()}</div>
+            <div className={guess[6]?.toString()}> {guess[2]?.toString().replace(/,/g, '\n')}</div>
             <div className={guess[7]?.toString()}> {guess[3]?.toString()}</div>
         </div>
         )
     // }
+            // <div className={guess[6]?.toString()}> {guess[2]?.toString().replace(/,/g, '\n')}</div>
+            // <div className={guess[6]?.toString()}> {guess[2]?.toString()}</div>
 
     // add pop-up animation when rendering current guess (possibly) 
     /*
