@@ -57,10 +57,14 @@ function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) {
     // ResponseTable component takes all guesses from GuessBox entries, 
     // and is a container that renders each ResponseRow() object 
     console.log("ResponseGrid currentGuess: ", currentGuess);
-    console.log("ResponseGrid currentTurn: ", currentTurn);
+    // console.log("ResponseGrid currentTurn: ", currentTurn);
 
     /* function updateResponseGrid() {
     }*/
+
+    if ( currentTurn == 0){
+        return <div></div>
+    }
 
     return (
         <div className="stardewFont">

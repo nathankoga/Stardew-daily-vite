@@ -78,7 +78,7 @@ class GuessEntity {
 
 function createInitialGuesses() {
     // initialize the state for the allowed num_guesses
-    let num_guesses = 5;
+    let num_guesses = 0;
     const initialGuesses = [];
     for (let i = 0; i < num_guesses; i++) {
         let vals: Array<string | boolean | null> = [null, null, null, null];
@@ -88,33 +88,82 @@ function createInitialGuesses() {
     return initialGuesses;
 }
 
-function getAPICall(inName: string) {
+async function getAPICall(inName: string) {
     const loweredInput = inName.toLowerCase();
-        if ( !(isAlpha(loweredInput)) ) {
-            alert("Only input alphabet characters!");
-            return
-        }
+    if ( !(isAlpha(loweredInput)) ) {
+        alert("Only input alphabet characters!");
+        return
+    }
+    
+    // create header for GET request
+    const headers = new Headers();
+    headers.set('Content-Type', 'application/json');
+    headers.set('Accept', 'application/json');
 
+    // create url and add parameters for API search 
+    let getURL = new URL("https://pouq9pcpxk.execute-api.us-west-2.amazonaws.com/Dev-stage");
+    getURL.searchParams.append('ID', loweredInput);
+
+    // send a GET Request to the API  
+    const requestOptions: RequestInfo = new Request(getURL, {
+        method: "GET",
+        headers: headers,
+        redirect: 'follow'
+    })
+    console.log("sending request:", getURL.toString())
+
+    // wait for response
+    const response = await fetch(requestOptions);
+    const resultText = await response.text();
+    const parsed_res = JSON.parse(resultText);
+    const parsed_body = JSON.parse(parsed_res.body);
+    const inner = parsed_body.Item;
+    return inner;
 }
 
 
 function GuessBox() {
-
-    // figure out how to pick answer differently in future 
-    // on first-render hook, choose a random item out of 155
-    useEffect(() => {
-        console.log("INITIAL PAGE RENDER");
-
-
-    }, []);
-    const answer = new GuessEntity("starfruit", "farming", "summer", "750");
 
     // state variables for the text within the input box 
     const [guess, setGuess] = useState("");
     const [turn, setTurn] = useState(0);
     const [prevGuesses, setPrevGuesses] = useState(createInitialGuesses); 
     const [usedItems, setUsedItems] = useState<string[]>([]);
+    const [answer, setAnswer] = useState(new GuessEntity("null", "null", "null", "null"))
     // const [matchBool, setMatchBool] = useState(false);
+    
+    // let answer = new GuessEntity("starfruit", "farming", "summer", "750");
+    
+    // figure out how to pick answer differently in future 
+    // on first-render hook, choose a random item out of 155
+    useEffect(() => {
+        console.log("INITIAL PAGE RENDER");
+        // sortKey: random num  0 ~ 154
+        const randInt = Math.floor(Math.random() * 154);
+        let answerStr = ""
+        // If I remade the project, I would restructure the database to use unique ID numbers as a primary key
+        // Because of how the DB was created, we can't search for ID #'s, and therefore have to search through
+        // A .csv instead of load whole database to memory and search.
+       fetch('lookupMap.csv')
+        .then( response => response.text() )
+        .then( text => {
+            const inText = text.split("\r\n");
+            for (let idx = 0; idx < inText.length; idx++){
+                let inArray= inText[idx].split(",");
+                if (inArray[1] == randInt.toString()){
+                    answerStr = inArray[0];
+                }
+
+            }
+            getAPICall(answerStr)
+                .then(response => {
+                    console.log("respond", response);
+                    console.log(answerStr);
+                    setAnswer(new GuessEntity(response.ID, response.profession, response.season, response.sellPrice.toString()));
+                });
+        })
+    }, []);
+
     
     function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
         // when the textbox value is changed, update the guess variable to whatever is inside the textbox
@@ -173,21 +222,12 @@ function GuessBox() {
                         alert("already guessed, skip");
                     }                    
                     else {  // otherwise, we have a new guess
-                        // rebuild a new array (treat state objects as read only, so rebuild)
-                        const newGuessesArray = prevGuesses.map(item => {
-                            if (item.guess_num === turn) {
-                                return {
-                                    ...item,
-                                    id: turn, values: correctnessArray,
-                                };
-                            }
-                            else {
-                                return item;
-                            }
-                        })
+
+                        setPrevGuesses([{guess_num: turn, values: correctnessArray}, ...prevGuesses]);
 
                         // update prevGuesses with rebuilt array
-                        setPrevGuesses(newGuessesArray);
+                        
+                        // setPrevGuesses(newGuessesArray);
                         setUsedItems([...usedItems, guessedItem.ID]);
                         console.log("previous guess items: ", usedItems);
                        
