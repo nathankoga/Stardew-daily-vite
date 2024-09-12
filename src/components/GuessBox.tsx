@@ -91,7 +91,7 @@ function createInitialGuesses() {
 async function getAPICall(inName: string) {
     const loweredInput = inName.toLowerCase();
     if ( !(isAlpha(loweredInput)) ) {
-        alert("Only input alphabet characters!");
+        console.log("ERROR: Only input alphabet characters!");
         return
     }
     
@@ -155,6 +155,7 @@ function GuessBox() {
                 }
 
             }
+            console.log("Determined answer:", answerStr);
             getAPICall(answerStr)
                 .then(response => {
                     console.log("respond", response);
@@ -169,7 +170,6 @@ function GuessBox() {
         // when the textbox value is changed, update the guess variable to whatever is inside the textbox
         // call REST GET method to fetch from database
         setGuess(event.target.value);
-        console.log("Current: ", guess);
     }
 
     const submitHandler = () => {
