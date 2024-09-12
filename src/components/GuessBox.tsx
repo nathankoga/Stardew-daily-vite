@@ -139,30 +139,44 @@ function GuessBox() {
     useEffect(() => {
         console.log("INITIAL PAGE RENDER");
         // sortKey: random num  0 ~ 154
-        const randInt = Math.floor(Math.random() * 154);
-        let answerStr = ""
-        // If I remade the project, I would restructure the database to use unique ID numbers as a primary key
-        // Because of how the DB was created, we can't search for ID #'s, and therefore have to search through
-        // A .csv instead of load whole database to memory and search.
-       fetch('lookupMap.csv')
-        .then( response => response.text() )
-        .then( text => {
-            const inText = text.split("\r\n");
-            for (let idx = 0; idx < inText.length; idx++){
-                let inArray= inText[idx].split(",");
-                if (inArray[1] == randInt.toString()){
-                    answerStr = inArray[0];
-                }
 
-            }
-            console.log("Determined answer:", answerStr);
-            getAPICall(answerStr)
-                .then(response => {
-                    console.log("respond", response);
-                    console.log(answerStr);
-                    setAnswer(new GuessEntity(response.ID, response.profession, response.season, response.sellPrice.toString()));
-                });
-        })
+        const asyncSetAnswer = async () => {
+        try {
+            const randInt = Math.floor(Math.random() * 154);
+            let answerStr = ""
+            // If I remade the project, I would restructure the database to use unique ID numbers as a primary key
+            // Because of how the DB was created, we can't search for ID #'s, and therefore have to search through
+            // A .csv instead of load whole database to memory and search.
+            fetch('lookupMap.csv')
+                .then( response => response.text() )
+                .then( text => {
+                    const inText = text.split("\r\n");
+                    for (let idx = 0; idx < inText.length; idx++){
+                        let inArray= inText[idx].split(",");
+                        if ( idx < 10){
+                            console.log(inArray);
+                        }
+                        if (inArray[1] == randInt.toString()){
+                            answerStr = inArray[0];
+                            break;
+                        }
+
+                    }
+                    console.log("Determined answer:", answerStr);
+                    getAPICall(answerStr)
+                        .then(response => {
+                            console.log("respond", response);
+                            console.log(answerStr);
+                            setAnswer(new GuessEntity(response.ID, response.profession, response.season, response.sellPrice.toString()));
+                        });
+            
+                })
+        }       
+        catch (error) {
+            console.log("Error trying to call API");
+        }
+        }
+        asyncSetAnswer();
     }, []);
 
     
