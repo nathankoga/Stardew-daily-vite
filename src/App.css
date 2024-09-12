@@ -51,7 +51,8 @@ body {
 
 @font-face {
   font-family:"SDV_font";
-  src:url('./fonts/Stardew_Valley.ttf') format('truetype');
+  /* src:url('./fonts/Stardew_Valley.ttf') format('truetype'); */
+  src:url('./fonts/StardewValley.ttf') format('truetype');
 }
 
 .main_title {

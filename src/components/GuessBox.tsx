@@ -151,11 +151,9 @@ function GuessBox() {
                 .then( response => response.text() )
                 .then( text => {
                     const inText = text.split("\n");
+                    // const inText = text.split("\r\n");
                     for (let idx = 0; idx < inText.length; idx++){
                         let inArray= inText[idx].split(",");
-                        if ( idx < 10){
-                            console.log(inArray);
-                        }
                         if (inArray[1] == randInt.toString()){
                             answerStr = inArray[0];
                             break;
