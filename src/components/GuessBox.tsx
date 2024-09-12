@@ -150,7 +150,7 @@ function GuessBox() {
             fetch('lookupMap.csv')
                 .then( response => response.text() )
                 .then( text => {
-                    const inText = text.split("\r\n");
+                    const inText = text.split("\n");
                     for (let idx = 0; idx < inText.length; idx++){
                         let inArray= inText[idx].split(",");
                         if ( idx < 10){
