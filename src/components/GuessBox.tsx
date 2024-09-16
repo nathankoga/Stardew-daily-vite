@@ -4,7 +4,8 @@
  */
 // 
 import {useState, useEffect} from 'react';
-import ResponseGrid from './ResponseGrid.tsx'
+import ResponseGrid from './ResponseGrid.tsx';
+import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 // import AdminPostBox from './admin.tsx'
 
 
@@ -34,11 +35,13 @@ class GuessEntity {
         // compare this guess entity to the answer item
         // returnTuple: [boolean, boolean, boolean, string];
         let priceChar = '';
-        if (this.sellPrice > target.sellPrice) {
-            priceChar = "greater";
+        const selfInt = parseInt(this.sellPrice);
+        const targetInt = parseInt(target.sellPrice);
+        if (selfInt > targetInt) {
+            priceChar = "greater";  // our guess was too high ==> guess item is less than our guess
             this.sellPrice = "< " + this.sellPrice;
         }
-        else if (this.sellPrice < target.sellPrice) {
+        else if (selfInt < targetInt) {
             priceChar = "less";
             this.sellPrice = "> " + this.sellPrice;
         }
@@ -74,6 +77,11 @@ class GuessEntity {
             this.ID == target.ID, this.profession == target.profession, seasonStr, priceChar];
         return ret_vals;
     }
+}
+
+type AutocompleteItem = {
+    id: number;
+    name: string;
 }
 
 function createInitialGuesses() {
@@ -132,12 +140,13 @@ function GuessBox() {
     const [answer, setAnswer] = useState(new GuessEntity("null", "null", "null", "null"))
     // const [matchBool, setMatchBool] = useState(false);
     
-    // let answer = new GuessEntity("starfruit", "farming", "summer", "750");
-    
-    // figure out how to pick answer differently in future 
+    const [autocompleteList, setAutocompleteList] = useState<AutocompleteItem[]>([]);
+    //Array<AutocompleteItem> = [];
+
     // on first-render hook, choose a random item out of 155
     useEffect(() => {
         console.log("INITIAL PAGE RENDER");
+        // load the guess table + sprite table into memory here?
         // sortKey: random num  0 ~ 154
 
         const asyncSetAnswer = async () => {
@@ -152,14 +161,17 @@ function GuessBox() {
                 .then( text => {
                     const inText = text.split("\n");
                     // const inText = text.split("\r\n");
+                    const tempList= [];
+
                     for (let idx = 0; idx < inText.length; idx++){
                         let inArray= inText[idx].split(",");
                         if (inArray[1] == randInt.toString()){
                             answerStr = inArray[0];
-                            break;
                         }
-
+                        tempList.push({id:idx, name: inArray[0]});
                     }
+                    setAutocompleteList(tempList);
+
                     console.log("Determined answer:", answerStr);
                     getAPICall(answerStr)
                         .then(response => {
@@ -178,11 +190,23 @@ function GuessBox() {
     }, []);
 
     
-    function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
-        // when the textbox value is changed, update the guess variable to whatever is inside the textbox
-        // call REST GET method to fetch from database
-        setGuess(event.target.value);
+    // function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
+    //     // when the textbox value is changed, update the guess variable to whatever is inside the textbox
+    //     setGuess(event.target.value);
+    //     // console.log(string, results);
+    // }
+
+    const handleOnSearch = (word:string, results:AutocompleteItem[]) => {
+        // updateGuessBox equivalent => autocomplete component search (with enter) same as just typing
+        console.log("handleOnSearch: ", word, results);
+        setGuess(word);
     }
+
+    // const handleOnSelect = (item) => {
+    //     console.log("Select:", item)
+    // }
+
+    // TODO: Wrap the ReactSearchAutocomplete box within another component s.t. we have functionality on "Enter-key"
 
     const submitHandler = () => {
         // handler that looks for a submission ==> call API to search DB for desired item
@@ -249,7 +273,7 @@ function GuessBox() {
                             // figure out how to disable text box and end game
                         }
 
-                        else if (turn === 4) {  // loss condition
+                        else if (turn === 25) {  // loss condition
                             alert("game lost.");
                         }
                         setTurn(i => i + 1);  
@@ -271,16 +295,21 @@ function GuessBox() {
     }  // end of submitHandler
 
     // <adminPostBox></AdminPostBox>
+            // <input type="text" 
+            //         id="guess_box" 
+            //         name="guess_box" 
+            //         placeholder="Enter Guess..." 
+            //         onChange={updateGuessBox}
+            //         />
+    
     return (
         <div>
-            <input type="text" 
-                    id="guess_box" 
-                    name="guess_box" 
-                    placeholder="Enter Guess..." 
-                    onChange={updateGuessBox}
-                    />
-
+            <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
+                onSearch={handleOnSearch} showIcon={false}
+                styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}
+                />
             <input type="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
+
             <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
         </div>
     )
