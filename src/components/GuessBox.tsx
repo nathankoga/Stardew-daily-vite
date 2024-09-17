@@ -138,7 +138,7 @@ function GuessBox() {
     const [prevGuesses, setPrevGuesses] = useState(createInitialGuesses); 
     const [usedItems, setUsedItems] = useState<string[]>([]);
     const [answer, setAnswer] = useState(new GuessEntity("null", "null", "null", "null"))
-    // const [matchBool, setMatchBool] = useState(false);
+    const [matchBool, setMatchBool] = useState(false);
     
     const [autocompleteList, setAutocompleteList] = useState<AutocompleteItem[]>([]);
     //Array<AutocompleteItem> = [];
@@ -189,7 +189,7 @@ function GuessBox() {
         asyncSetAnswer();
     }, []);
 
-    
+    // TODO: ADD WIN/LOSS CONDITIONS and re-renders of the screen 
     // function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
     //     // when the textbox value is changed, update the guess variable to whatever is inside the textbox
     //     setGuess(event.target.value);
@@ -270,8 +270,7 @@ function GuessBox() {
                        
                         // correctnessArray[1] stores whether or not it's a match
                         if (correctnessArray[1] === true) {  // win condition
-                            // alert("match! Game won");
-                            // figure out how to disable text box and end game
+                            setMatchBool(true);
                         }
 
                         else if (turn === 25) {  // loss condition
@@ -289,34 +288,36 @@ function GuessBox() {
 
             .catch(error => console.log('error', error));
 
-        // call POST request for storing guess info to database
-        
         console.log("submitHandler finished");
 
     }  // end of submitHandler
 
     // <adminPostBox></AdminPostBox>
-            // <input type="text" 
-            //         id="guess_box" 
-            //         name="guess_box" 
-            //         placeholder="Enter Guess..." 
-            //         onChange={updateGuessBox}
-            //         />
-    
-    return (
-        <div>
-            <div className='searchBar'>
-                <div style={{width: 450, marginRight:"3px"}}>
-                    <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
-                        onSearch={handleOnSearch} showIcon={false} onSelect={handleOnSelect}
-                        styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}
-                    />
-                </div>
-                <input type="button" className="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
+
+    if (matchBool == true){
+        return (
+            <div>
+                <div> congrats winning</div>
+                <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
             </div>
-            <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
-        </div>
-    )
+        )
+    }
+
+    else {
+        return (
+            <div>
+                <div className='searchBar'>
+                    <div style={{width: 450, marginRight:"3px"}}>
+                        <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
+                            onSearch={handleOnSearch} showIcon={false} onSelect={handleOnSelect}
+                            styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}/>
+                    </div>
+                    <input type="button" className="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
+                </div>
+                <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
+            </div>
+        ) 
+    }
 }
 
 
