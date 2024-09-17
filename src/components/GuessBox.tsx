@@ -202,9 +202,10 @@ function GuessBox() {
         setGuess(word);
     }
 
-    // const handleOnSelect = (item) => {
-    //     console.log("Select:", item)
-    // }
+    const handleOnSelect = (item:AutocompleteItem) => {
+        console.log("Select:", item)
+        setGuess(item.name);
+    }
 
     // TODO: Wrap the ReactSearchAutocomplete box within another component s.t. we have functionality on "Enter-key"
 
@@ -304,12 +305,15 @@ function GuessBox() {
     
     return (
         <div>
-            <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
-                onSearch={handleOnSearch} showIcon={false}
-                styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}
-                />
-            <input type="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
-
+            <div className='searchBar'>
+                <div style={{width: 450, marginRight:"3px"}}>
+                    <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
+                        onSearch={handleOnSearch} showIcon={false} onSelect={handleOnSelect}
+                        styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}
+                    />
+                </div>
+                <input type="button" className="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
+            </div>
             <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
         </div>
     )

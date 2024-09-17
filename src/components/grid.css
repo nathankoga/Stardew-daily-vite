@@ -14,7 +14,7 @@
 
 .rowLabels > div {
     display: block;
-    width:100px;
+    width:110px;
     height:40px;
     margin: 4px;
     text-align: center;
@@ -31,8 +31,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width:100px;
-    height:100px;
+    width:110px;
+    height:110px;
     border: 1px solid #bbb;
     margin: 4px;
     text-align: center;

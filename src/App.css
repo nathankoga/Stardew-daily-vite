@@ -58,4 +58,12 @@ body {
 .main_title {
   font-family: "SDV_font";
   margin-top: 5px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.searchBar {
+  display: inline-flex;
+  width: 500px;
+  border-radius:8px;
 }
