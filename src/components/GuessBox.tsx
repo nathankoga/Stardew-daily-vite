@@ -203,22 +203,52 @@ function GuessBox() {
     }
 
     const handleOnSelect = (item:AutocompleteItem) => {
+        // unlike submitHandler which runs after the "guess" state is updated,
+        // this call handles requests to render a new item without needing to guarantee the "guess" state is updated
         console.log("Select:", item)
         setGuess(item.name);
+        getAPICall(item.name)
+            .then(response => {
+                console.log("respond", response);
+                let guessedItem = new GuessEntity(response.ID, response.profession, response.season, response.sellPrice.toString());
+                let correctnessArray = guessedItem.compare(answer);
+                    
+                if (usedItems.includes(guessedItem.ID)) {
+                    alert("already guessed, skip");
+                }                    
+                else {  // otherwise, we have a new guess
+
+                    setPrevGuesses([{guess_num: turn, values: correctnessArray}, ...prevGuesses]);
+
+                    // update prevGuesses with rebuilt array
+                    
+                    setUsedItems([...usedItems, guessedItem.ID]);
+                    console.log("previous guess items: ", usedItems);
+                    
+                    // correctnessArray[1] stores whether or not it's a match
+                    if (correctnessArray[1] === true) {  // win condition
+                        setMatchBool(true);
+                    }
+
+                    else if (turn === 15) {  // loss condition
+                        alert("game lost.");
+                    }
+                    setTurn(i => i + 1);  
+                }
+            });
     }
 
-    // TODO: Wrap the ReactSearchAutocomplete box within another component s.t. we have functionality on "Enter-key"
 
     const submitHandler = () => {
         // handler that looks for a submission ==> call API to search DB for desired item
         // call REST GET API to compare values of guess item and actual item
-        const guessToLower = guess.toLowerCase();
+        const guessToLower =  guess.toLowerCase();
         // prelim check for only lowercase
         if ( !(isAlpha(guess)) ) {
             alert("Only input alphabet characters!");
             return
         }
-        
+    
         // create header for GET request
         const headers = new Headers();
         headers.set('Content-Type', 'application/json');
@@ -273,11 +303,12 @@ function GuessBox() {
                             setMatchBool(true);
                         }
 
-                        else if (turn === 25) {  // loss condition
+                        else if (turn === 15) {  // loss condition
                             alert("game lost.");
                         }
                         setTurn(i => i + 1);  
                         // update turn logic 
+                        // TODO: Only the first guess is adding the animation + animation is incorrect
                     }
                 }
                 // otherwise, item was not found

@@ -13,54 +13,42 @@ type ResponseRowProps = {
     rowIndex: number;
 }
 
+function CurrentResponseRow({guess, rowIndex}: ResponseRowProps) {
+    console.log("ResponseRow rendered: ", guess, rowIndex);
+
+    return (
+        <div className="responseRow validResponse animated">
+            <div className={`${guess[4]?.toString()} animatedBox firstBox`}> {guess[0]?.toString()}</div>
+            <div className={`${guess[5]?.toString()} animatedBox secondBox`}> {guess[1]?.toString()}</div>
+            <div className={`${guess[6]?.toString()} animatedBox thirdBox`}> {guess[2]?.toString().replace(/,/g, '\n')}</div>
+            <div className={`${guess[7]?.toString()} animatedBox fourthBox`}> {guess[3]?.toString()}</div>
+        </div>
+    )
+}
+
 function ResponseRow({guess, rowIndex}: ResponseRowProps) {
     // a singular response row for guesses, rendered at location based off of rowIndex
     // each row has 4 divs based off of each guess value
     // [name, profession, season{s}, price]
     console.log("ResponseRow rendered: ", guess, rowIndex);
 
-    // render past guesses automatically
-    // next add conditional rendering to each inner div based off of specific rules
-    // guess[0] contains name of item ==> future bitmap search --> OR we send a tuple pair of bitmap instead
-    // if (guess[0]) {
-        return (
-        <div className="responseRow validResponse">
-            <div className={guess[4]?.toString()}> {guess[0]?.toString()}</div>
-            <div className={guess[5]?.toString()}> {guess[1]?.toString()}</div>
-            <div className={guess[6]?.toString()}> {guess[2]?.toString().replace(/,/g, '\n')}</div>
-            <div className={guess[7]?.toString()}> {guess[3]?.toString()}</div>
-        </div>
-        )
-    // }
-            // <div className={guess[6]?.toString()}> {guess[2]?.toString().replace(/,/g, '\n')}</div>
-            // <div className={guess[6]?.toString()}> {guess[2]?.toString()}</div>
-
-    // add pop-up animation when rendering current guess (possibly) 
-    /*
     return (
-        <div className="responseRow emptyResponse">
-            <div> </div>
-            <div> </div>
-            <div> </div>
-            <div> </div>
+        <div className="responseRow validResponse">
+            <div className={`${guess[4]?.toString()} firstBox`}> {guess[0]?.toString()}</div>
+            <div className={`${guess[5]?.toString()} secondBox`}> {guess[1]?.toString()}</div>
+            <div className={`${guess[6]?.toString()} thirdBox`}> {guess[2]?.toString().replace(/,/g, '\n')}</div>
+            <div className={`${guess[7]?.toString()} fourthBox`}> {guess[3]?.toString()}</div>
         </div>
-    )*/
+    )
 }
 
 
-
 function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) { 
-    // state variables for current guess
-    // const [currentResponse, updateResponse] = useState([]);
-
     // hooks into GuessBox, and responds to the onClick
     // ResponseTable component takes all guesses from GuessBox entries, 
     // and is a container that renders each ResponseRow() object 
     console.log("ResponseGrid currentGuess: ", currentGuess);
-    // console.log("ResponseGrid currentTurn: ", currentTurn);
-
-    /* function updateResponseGrid() {
-    }*/
+    console.log("ResponseGrid currentTurn: ", currentTurn);
 
     if ( currentTurn == 0){
         return <div></div>
@@ -76,7 +64,13 @@ function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) {
             </div> 
 
             {previousGuesses.map((g, idx) => {
-                return <ResponseRow guess={g.values} rowIndex = {idx}/>
+                if (idx == 0){
+                    return <CurrentResponseRow key = {currentTurn - idx} guess={g.values} rowIndex = {idx}/>
+                }
+                else{
+                    return <ResponseRow key = {currentTurn - idx} guess={g.values} rowIndex = {idx}/>
+                }
+                
             })}
         </div>
     )
