@@ -6,6 +6,7 @@
 import {useState, useEffect} from 'react';
 import ResponseGrid from './ResponseGrid.tsx';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
+import GameEndModal from './GameEndModal.tsx'
 // import AdminPostBox from './admin.tsx'
 
 
@@ -130,6 +131,8 @@ async function getAPICall(inName: string) {
 }
 
 
+
+
 function GuessBox() {
 
     // state variables for the text within the input box 
@@ -139,14 +142,13 @@ function GuessBox() {
     const [usedItems, setUsedItems] = useState<string[]>([]);
     const [answer, setAnswer] = useState(new GuessEntity("null", "null", "null", "null"))
     const [matchBool, setMatchBool] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     
     const [autocompleteList, setAutocompleteList] = useState<AutocompleteItem[]>([]);
-    //Array<AutocompleteItem> = [];
 
-    // on first-render hook, choose a random item out of 155
+    // initial render mount, choose a random item out of 155
     useEffect(() => {
-        console.log("INITIAL PAGE RENDER");
-        // load the guess table + sprite table into memory here?
+        // load the guess table + sprite table into memory here
         // sortKey: random num  0 ~ 154
 
         const asyncSetAnswer = async () => {
@@ -178,7 +180,13 @@ function GuessBox() {
                             console.log("respond", response);
                             console.log(answerStr);
                             setAnswer(new GuessEntity(response.ID, response.profession, response.season, response.sellPrice.toString()));
-                        });
+                        })
+                        .catch(e => 
+                            {
+                            console.log(e)
+                            setAnswer(new GuessEntity("diamond", "mining", "none", "750"));
+                            }
+                        )
             
                 })
         }       
@@ -189,12 +197,13 @@ function GuessBox() {
         asyncSetAnswer();
     }, []);
 
-    // TODO: ADD WIN/LOSS CONDITIONS and re-renders of the screen 
-    // function updateGuessBox(event: React.ChangeEvent<HTMLInputElement>) {
-    //     // when the textbox value is changed, update the guess variable to whatever is inside the textbox
-    //     setGuess(event.target.value);
-    //     // console.log(string, results);
-    // }
+    useEffect(() => {
+        // listener for the showModal update on matchBool update after a small delay
+        if (matchBool){
+            setTimeout(() => setShowModal(true), 2000);
+        }
+
+    }, [matchBool])
 
     const handleOnSearch = (word:string, results:AutocompleteItem[]) => {
         // updateGuessBox equivalent => autocomplete component search (with enter) same as just typing
@@ -226,11 +235,11 @@ function GuessBox() {
                     console.log("previous guess items: ", usedItems);
                     
                     // correctnessArray[1] stores whether or not it's a match
-                    if (correctnessArray[1] === true) {  // win condition
+                    if (correctnessArray[4] == true) {  // win condition
                         setMatchBool(true);
                     }
 
-                    else if (turn === 15) {  // loss condition
+                    else if (turn === 25) {  // loss condition
                         alert("game lost.");
                     }
                     setTurn(i => i + 1);  
@@ -299,16 +308,15 @@ function GuessBox() {
                         console.log("previous guess items: ", usedItems);
                        
                         // correctnessArray[1] stores whether or not it's a match
-                        if (correctnessArray[1] === true) {  // win condition
+                        if (correctnessArray[4] == true) {  // win condition
                             setMatchBool(true);
                         }
 
-                        else if (turn === 15) {  // loss condition
+                        else if (turn === 25) {  // loss condition
                             alert("game lost.");
                         }
                         setTurn(i => i + 1);  
                         // update turn logic 
-                        // TODO: Only the first guess is adding the animation + animation is incorrect
                     }
                 }
                 // otherwise, item was not found
@@ -324,31 +332,20 @@ function GuessBox() {
     }  // end of submitHandler
 
     // <adminPostBox></AdminPostBox>
-
-    if (matchBool == true){
-        return (
-            <div>
-                <div> congrats winning</div>
-                <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
-            </div>
-        )
-    }
-
-    else {
-        return (
-            <div>
-                <div className='searchBar'>
-                    <div style={{width: 450, marginRight:"3px"}}>
-                        <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
-                            onSearch={handleOnSearch} showIcon={false} onSelect={handleOnSelect}
-                            styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}/>
-                    </div>
-                    <input type="button" className="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
+    return (
+        <div>
+            <div className='searchBar'>
+                <div style={{width: 450, marginRight:"3px", zIndex: 4}}>
+                    <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
+                        onSearch={handleOnSearch} showIcon={false} onSelect={handleOnSelect}
+                        styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}/>
                 </div>
-                <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
+                <input type="button" className="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
             </div>
-        ) 
-    }
+            <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
+            {showModal && <GameEndModal turn={turn} solution={answer.ID} />}
+        </div>
+    ) 
 }
 
 
