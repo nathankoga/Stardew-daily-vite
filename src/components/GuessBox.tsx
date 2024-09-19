@@ -72,7 +72,6 @@ class GuessEntity {
         // NOTE: every season (fish / crop) is different from "none" season (ores)
         // for every/multi-season crops and fish, where that "class" of object are associated to season
         // it tokenizen on comma (,). forageables with NO inherent connection to season have "none" as season
-        // 
 
         let ret_vals: Array<string | boolean | null> = [this.ID, this.profession, this.season, this.sellPrice.toString() + "g",
             this.ID == target.ID, this.profession == target.profession, seasonStr, priceChar];
@@ -197,13 +196,28 @@ function GuessBox() {
         asyncSetAnswer();
     }, []);
 
+    
+    // constant listeners for the showModal update on matchBool update after a small delay
     useEffect(() => {
-        // listener for the showModal update on matchBool update after a small delay
         if (matchBool){
             setTimeout(() => setShowModal(true), 2000);
         }
+    
+        const handleEnterKey = (event: KeyboardEvent) => {
+            if (event.key === "Enter"){  // FIX STATE
+                console.log("Enter handler: ", guess);
+                submitHandler();
+            }
+        };
 
-    }, [matchBool])
+        window.addEventListener('keydown', handleEnterKey);
+
+        return () => {
+            window.removeEventListener('keydown', handleEnterKey);
+        }
+
+
+    }, [matchBool]);
 
     const handleOnSearch = (word:string, results:AutocompleteItem[]) => {
         // updateGuessBox equivalent => autocomplete component search (with enter) same as just typing

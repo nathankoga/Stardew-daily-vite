@@ -10,9 +10,11 @@ function GameEndModal({turn, solution}: GameEndProps) {
 
     return (
         <div className="gameEndModal">
-            <h1>You Win!</h1>
-            <p className="solution">{solution}</p>
-            <p>You found the solution in {turn} guesses!</p>
+            <div> 
+                <h1>You Win!</h1>
+                <p className="solution">{solution}</p>
+                <p>You found the solution in {turn} guesses!</p>
+            </div>
         </div>
     )
 }
