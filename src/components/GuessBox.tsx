@@ -197,15 +197,14 @@ function GuessBox() {
     }, []);
 
     
-    // constant listeners for the showModal update on matchBool update after a small delay
+    // constant listeners for the showModal update on matchBool or 'enterkey'
     useEffect(() => {
         if (matchBool){
             setTimeout(() => setShowModal(true), 2000);
         }
     
         const handleEnterKey = (event: KeyboardEvent) => {
-            if (event.key === "Enter"){  // FIX STATE
-                console.log("Enter handler: ", guess);
+            if (event.key === "Enter"){  
                 submitHandler();
             }
         };
@@ -217,7 +216,7 @@ function GuessBox() {
         }
 
 
-    }, [matchBool]);
+    }, [guess, matchBool]);
 
     const handleOnSearch = (word:string, results:AutocompleteItem[]) => {
         // updateGuessBox equivalent => autocomplete component search (with enter) same as just typing
@@ -266,6 +265,7 @@ function GuessBox() {
         // handler that looks for a submission ==> call API to search DB for desired item
         // call REST GET API to compare values of guess item and actual item
         const guessToLower =  guess.toLowerCase();
+        console.log("Submit handler: ", guess)
         // prelim check for only lowercase
         if ( !(isAlpha(guess)) ) {
             alert("Only input alphabet characters!");
@@ -312,21 +312,18 @@ function GuessBox() {
                         alert("already guessed, skip");
                     }                    
                     else {  // otherwise, we have a new guess
-
                         setPrevGuesses([{guess_num: turn, values: correctnessArray}, ...prevGuesses]);
-
                         // update prevGuesses with rebuilt array
                         
-                        // setPrevGuesses(newGuessesArray);
                         setUsedItems([...usedItems, guessedItem.ID]);
                         console.log("previous guess items: ", usedItems);
                        
-                        // correctnessArray[1] stores whether or not it's a match
+                        // correctnessArray[4] stores whether or not it's a match
                         if (correctnessArray[4] == true) {  // win condition
                             setMatchBool(true);
                         }
 
-                        else if (turn === 25) {  // loss condition
+                        else if (turn === 35) {  // loss condition
                             alert("game lost.");
                         }
                         setTurn(i => i + 1);  
@@ -352,12 +349,13 @@ function GuessBox() {
                 <div style={{width: 450, marginRight:"3px", zIndex: 4}}>
                     <ReactSearchAutocomplete items={autocompleteList} placeholder={"Enter Guess..."} 
                         onSearch={handleOnSearch} showIcon={false} onSelect={handleOnSelect}
-                        styling={{height: "34px", border: "1px solid darkgreen", borderRadius:"4px",boxShadow:"none"}}/>
+                        styling={{height: "35px", border: "1px solid grey", borderRadius:"4px",boxShadow:"none"}}/>
                 </div>
                 <input type="button" className="button" id="submit_button" name="submit_button" value="submit" onClick={submitHandler}/>
             </div>
+
             <ResponseGrid currentGuess = {guess} previousGuesses = {prevGuesses} currentTurn = {turn} />
-            {showModal && <GameEndModal turn={turn} solution={answer.ID} />}
+                {showModal && <GameEndModal turn={turn} solution={answer.ID} />}
         </div>
     ) 
 }

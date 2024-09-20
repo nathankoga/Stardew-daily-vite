@@ -1,6 +1,4 @@
-// import {useState} from 'react';
 import "./grid.css"; 
-// compare with https://github.com/iamshaunjp/React-Wordle/blob/lesson-16/src/hooks/useWordle.js
 type GridProps = {
     currentGuess: string; 
     previousGuesses: Array< {guess_num: number, values: Array<string | boolean | null>}>;
@@ -48,7 +46,6 @@ function ResponseGrid({currentGuess, previousGuesses, currentTurn}: GridProps) {
     // ResponseTable component takes all guesses from GuessBox entries, 
     // and is a container that renders each ResponseRow() object 
     console.log("ResponseGrid currentGuess: ", currentGuess);
-    console.log("ResponseGrid currentTurn: ", currentTurn);
 
     if ( currentTurn == 0){
         return <div></div>
